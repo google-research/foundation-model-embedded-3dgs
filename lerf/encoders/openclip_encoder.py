@@ -27,11 +27,11 @@ from lerf.encoders.image_encoder import BaseImageEncoder #(BaseImageEncoder,Base
 
 # Note: more options of the OpenCLIPNetworkConfig, please refer to lerf/lerf_config.py
 @dataclass
-class OpenCLIPNetworkConfig():
+class OpenCLIPNetworkConfig:
     clip_model_type: str = "ViT-B-16"
     clip_model_pretrained: str = "laion2b_s34b_b88k"
     clip_n_dims: int = 512
-    negatives: Tuple[str] = ("object", "things", "stuff", "texture")
+    negatives: Tuple[str, ...] = ("object", "things", "stuff", "texture")
 
 
 class OpenCLIPNetwork(BaseImageEncoder):
@@ -84,7 +84,7 @@ class OpenCLIPNetwork(BaseImageEncoder):
     @property
     def embedding_dim(self) -> int:
         return self.config.clip_n_dims
-    
+
     def gui_cb(self,element):
         self.set_positives(element.value.split(";"))
 

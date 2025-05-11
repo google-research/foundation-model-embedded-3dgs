@@ -26,10 +26,10 @@ except ImportError:
 from lerf.encoders.image_encoder import BaseImageEncoder # BaseImageEncoderConfig
 
 @dataclass
-class CLIPNetworkConfig():
+class CLIPNetworkConfig:
     clip_model_type: str = "ViT-B/16"
     clip_n_dims: int = 512
-    negatives: Tuple[str] = ("object", "things", "stuff", "texture")
+    negatives: Tuple[str, ...] = ("object", "things", "stuff", "texture")
 
 
 class CLIPNetwork(BaseImageEncoder):

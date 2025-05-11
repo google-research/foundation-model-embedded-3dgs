@@ -23,7 +23,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 @dataclass
-class ExponentialDecaySchedulerConfig():
+class ExponentialDecaySchedulerConfig:
     """Config for exponential decay scheduler with warmup"""
     """target class to instantiate"""
     lr_pre_warmup: float = 1e-8
@@ -38,7 +38,7 @@ class ExponentialDecaySchedulerConfig():
     """The ramp function to use during the warmup."""
 
 
-class ExponentialDecayScheduler():
+class ExponentialDecayScheduler:
     """Exponential decay scheduler with linear warmup. Scheduler first ramps up to `lr_init` in `warmup_steps`
     steps, then exponentially decays to `lr_final` in `max_steps` steps.
     """

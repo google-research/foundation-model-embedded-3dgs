@@ -29,16 +29,16 @@ from scene.gaussian_model import GaussianModel
 
 
 @dataclass
-class LERFModelConfig():
+class LERFModelConfig:
     # _target: Type = field(default_factory=lambda: LERFModel)
     clip_loss_weight: float = 0.1
     n_scales: int = 30
     max_scale: float = 1.5
     """maximum scale used to compute relevancy with"""
     num_lerf_samples: int = 24
-    hashgrid_layers: Tuple[int] = (12, 12)
-    hashgrid_resolutions: Tuple[Tuple[int]] = ((16, 128), (128, 512))
-    hashgrid_sizes: Tuple[int] = (19, 19)
+    hashgrid_layers: Tuple[int, ...] = (12, 12)
+    hashgrid_resolutions: Tuple[Tuple[int, int], ...] = ((16, 128), (128, 512))
+    hashgrid_sizes: Tuple[int, ...] = (19, 19)
 
 
 class LERFModel(nn.Module):
@@ -50,9 +50,9 @@ class LERFModel(nn.Module):
         super(LERFModel, self).__init__()
         self.image_encoder_featdim = OpenCLIPNetworkConfig().clip_n_dims # TODO: Rocky, check this
         self.lerf_field = LERFField(
-            self.config.hashgrid_layers,
-            self.config.hashgrid_sizes,
-            self.config.hashgrid_resolutions,
+            grid_layers=self.config.hashgrid_layers,
+            grid_sizes=self.config.hashgrid_sizes,
+            grid_resolutions=self.config.hashgrid_resolutions,
             clip_n_dims=self.image_encoder_featdim,
         )
         self.intermed_vlfeat_dim = self.lerf_field.intermed_vlfeat_dim
@@ -62,7 +62,7 @@ class LERFModel(nn.Module):
         lerf_field_outputs = self.lerf_field.get_outputs(gaussian_samples, clip_scales, valid_gaussians_mask) # The gaussian_samples.feature_vl is changed in this function
         return lerf_field_outputs
 
-    def get_relevancy_img (self, fmap_embed, lerf_image_encoder, query_embed = None):
+    def get_relevancy_img(self, fmap_embed, lerf_image_encoder, query_embed = None):
         '''
         fmap_embed: C, H, W
         '''
@@ -78,7 +78,7 @@ class LERFModel(nn.Module):
         return torch.stack(n_phrases_score) # (n_positive_embeds, H, W, 1)
 
 
-    def get_relevancy_img_segmentation (self, fmap_embed, lerf_image_encoder, query_embed = None):
+    def get_relevancy_img_segmentation(self, fmap_embed, lerf_image_encoder, query_embed = None):
         '''
         fmap_embed: C, H, W
         '''
@@ -90,7 +90,7 @@ class LERFModel(nn.Module):
         softmax = softmax.permute(2,0,1).contiguous() # (nphrases, H, W)
         return softmax.unsqueeze(-1) # (nphrases, H, W, 1)
 
-    def get_max_across_rays (self, ray_samples, weights, hashgrid_field, scales_shape, preset_scales=None): # Note this is not used.
+    def get_max_across_rays(self, ray_samples, weights, hashgrid_field, scales_shape, preset_scales=None): # Note this is not used.
         # TODO smoothen this out
         if preset_scales is not None:
             assert len(preset_scales) == len(self.image_encoder.positives)

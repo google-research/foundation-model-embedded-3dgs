@@ -30,7 +30,7 @@ from lerf.encoders.image_encoder import BaseImageEncoder
 
 from scene import Scene
 
-class LERFFeatManager():  # pylint: disable=abstract-method
+class LERFFeatManager:  # pylint: disable=abstract-method
     """Basic stored clip/deno feature and the raw data manager implementation.
 
     This is pretty much a port over from our old dataloading utilities, and is a little jank
@@ -55,7 +55,7 @@ class LERFFeatManager():  # pylint: disable=abstract-method
 
         scene_viewpoints = input_scene.getTrainCameras().copy() # This is a list of Camera
         images = [scene_viewpoints[i].original_image.to(self.device)[None, ...] for i in range(len(scene_viewpoints))] # original_image is with shape [C, H, W]
-        self.lenth = len(images)
+        self.length = len(images)
         images = torch.cat(images) # (B, C, H, W)
 
         cache_dir = f"outputs/{dataname}"
@@ -86,7 +86,8 @@ class LERFFeatManager():  # pylint: disable=abstract-method
         del images
 
     def __len__(self):
-        return self.lenth
+        return self.length
+
     def __call__(self, image_index):
         # image_index is a scalar
         deno_feat_map = self.dino_dataloader.img_call(image_index)

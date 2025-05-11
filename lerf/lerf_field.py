@@ -72,9 +72,9 @@ class SceneContraction(nn.Module):
 class LERFField(nn.Module):
     def __init__(
         self,
-        grid_layers,
-        grid_sizes,
-        grid_resolutions,
+        grid_layers: Tuple[int, ...],
+        grid_sizes: Tuple[int, ...],
+        grid_resolutions: Tuple[Tuple[int, int], ...],
         clip_n_dims: int,
     ):
         super(LERFField, self).__init__()
